@@ -1,0 +1,17 @@
+name: CI devops 2021 EPF
+on:
+#to begin you want to launch this job in main and develop
+  push:
+    branches: main
+  pull_request:
+jobs:
+  build-and-test-app:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2.3.3
+      - name: Set up JDK 11
+        uses: joschi/setup-jdk@v2
+        with:
+          java-version: '11'
+      - name: Build and test with Maven
+        run: mvn -B package --file simple-api/pom.xml
