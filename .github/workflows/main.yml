@@ -2,7 +2,9 @@ name: CI devops 2021 EPF
 on:
 #to begin you want to launch this job in main and develop
   push:
-    branches: main
+    branches: 
+      - main
+      - develop
   pull_request:
 jobs:
   build-and-test-app:
@@ -15,3 +17,29 @@ jobs:
           java-version: '11'
       - name: Build and test with Maven
         run: mvn -B package --file simple-api/pom.xml
+# define job to build and publish docker image
+  build-and-push-docker-image:
+    needs: build-and-test-app
+# run only when code is compiling and tests are passing
+    runs-on: ubuntu-latest
+# steps to perform in job
+    steps:
+     - name: Checkout code
+       uses: actions/checkout@v2
+       
+     - name: Build image and push backend
+       uses: docker/build-push-action@v2
+       with: 
+# relative path to the place where source code with Dockerfile is located
+         context: ./simple-api
+# Note: tags has to be all lower-case
+         tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-epf:simple-api
+     - name: Build image and push database
+       uses: docker/build-push-action@v2
+       with: 
+         context: ./database
+    
+     - name: Build image and push httpd
+       uses: docker/build-push-action@v2
+       with: 
+         context: ./httpd
