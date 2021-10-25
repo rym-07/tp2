@@ -44,7 +44,7 @@ jobs:
        with: 
          context: ./database
          tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-epf:database
-         # build on feature branches, push only on main branch
+         # build on feature branches, push only on main branch ok
          push: ${{ github.ref == 'refs/heads/main' }}
          
      - name: Build image and push httpd
